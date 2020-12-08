@@ -40,7 +40,7 @@ using namespace std;
 int N, M;
 bool visit[9];
 
-void dfs(int target, int total)
+void dfs(int start, int total)
 {
     if (total >= M)
     {
@@ -54,7 +54,7 @@ void dfs(int target, int total)
         putchar('\n');
         return;
     }
-    for (int i = target; i <= N; ++i)
+    for (int i = start; i <= N; ++i)
     {
         if (!visit[i])
         {
