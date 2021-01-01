@@ -7,7 +7,7 @@ void swap(int *a, int *b)
     *b = temp;
 }
 
-void insertSort(int *arr, int n)
+void selectSort(int *arr, int n)
 {
     for (int i = 0; i < n - 1; i++)
     {
@@ -36,7 +36,7 @@ int main()
 {
     int arr[] = {1, 5, 8, 2, 9, 10, 41, 56, 78, 99, 21};
     int n = sizeof(arr) / sizeof(int);
-    insertSort(arr, n);
+    selectSort(arr, n);
     print(arr, n);
     return 0;
 }
