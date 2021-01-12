@@ -27,37 +27,34 @@
 14
 */
 
+/*
+
+=== Knapsack 알고리즘 ===
+
+P[i][w] = i개의 보석이 있고, 배낭의 무게한도가 w일 때, 최적의 이익을 의미한다.
+
+(아래 점화식에서, weight는 i번째 보석의 무게, value는 i번째 보석의 가치라고 하자.)
+
+if(w < weight)
+    P[i][w] = P[i-1][w]
+    => 배낭의 무게한도보다 보석의 무게가 무거운 경우, i번째 보석은 넣지 못하고, 따라서 이전 단계의 이익이 최적의 이익이다.
+
+
+else
+    P[i][w] = Max(P[i-1][w], P[i-1][w-weight] + value) 
+    => 배낭의 무게한도보다 보석의 무게보다 크다면, 아래의 두 가지 경우가 있다.
+        1. i번째 보석을 넣지 않는다.
+        2. i번째 보석을 넣는다. i번째 보석을 넣기 위해, i번째 보석의 무게만큼을 뺏을 때의 최적값 + i번째 보석의 가치
+    1의 경우와 2의 경우중 둘의 최댓값을 택한다.
+
+*/
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
 using namespace std;
 
-int N, K, visit[100], ans;
-
-void pack(vector<pair<int, int>> v, int toPick, int accV, int accW)
-{
-    if (!toPick)
-    {
-        ans = max(ans, accV);
-        return;
-    }
-
-    for (int i = 0; i < N; i++)
-    {
-        if (!visit[i])
-        {
-            int targetW = v[i].first;
-            int targetV = v[i].second;
-
-            if (accW + targetW <= K)
-            {
-                visit[i] = true;
-                pack(v, toPick - 1, accV + targetV, accW + targetW);
-                visit[i] = false;
-            }
-        }
-    }
-}
+int N, K, dp[101][100001];
 
 int main()
 {
@@ -65,7 +62,7 @@ int main()
     ios::sync_with_stdio(0);
 
     cin >> N >> K;
-    vector<pair<int, int>> v; //W V
+    vector<pair<int, int>> v;
     v.reserve(N);
 
     for (int i = 0; i < N; i++)
@@ -77,10 +74,32 @@ int main()
 
     for (int i = 1; i <= N; i++)
     {
-        pack(v, i, 0, 0);
+        int weight = v[i - 1].first;
+        int value = v[i - 1].second;
+
+        for (int j = 0; j <= K; j++)
+        {
+            if (j < weight)
+            {
+                dp[i][j] = dp[i - 1][j];
+            }
+            else
+            {
+                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight] + value);
+            }
+        }
     }
 
-    cout << ans << "\n";
+    // for (int i = 0; i <= N; i++)
+    // {
+    //     for (int j = 0; j <= K; j++)
+    //     {
+    //         cout << dp[i][j] << " ";
+    //     }
+    //     cout << "\n";
+    // }
+
+    cout << dp[N][K] << "\n";
 
     return 0;
 }
