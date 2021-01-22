@@ -56,82 +56,148 @@
 
 */
 
+/*
+    Kruskal Version
+*/
+
+// #include <iostream>
+// #include <algorithm>
+// #include <vector>
+// using namespace std;
+
+// int V, E, table[10001], ans;
+// vector<pair<pair<int, int>, int>> G;
+
+// int cri(const pair<pair<int, int>, int> &a, const pair<pair<int, int>, int> &b)
+// {
+//     return a.second < b.second;
+// }
+
+// int find(int x)
+// {
+//     if (table[x] == x)
+//     {
+//         return x;
+//     }
+//     return table[x] = find(table[x]);
+// }
+
+// void union_(int a, int b)
+// {
+//     a = find(a);
+//     b = find(b);
+
+//     if (a < b)
+//     {
+//         table[b] = a;
+//     }
+//     else
+//     {
+//         table[a] = b;
+//     }
+// }
+
+// void kruskal()
+// {
+//     for (auto target : G)
+//     {
+//         int from = target.first.first;
+//         int to = target.first.second;
+//         int cost = target.second;
+
+//         if (find(from) != find(to))
+//         {
+//             union_(from, to);
+//             ans += cost;
+//         }
+//     }
+// }
+
+// int main()
+// {
+
+//     cin.tie(0);
+//     ios::sync_with_stdio(0);
+
+//     cin >> V >> E;
+
+//     G.reserve(E);
+//     for (int i = 1; i <= V; i++)
+//     {
+//         table[i] = i;
+//     }
+
+//     for (int i = 0; i < E; i++)
+//     {
+//         int A, B, C;
+//         cin >> A >> B >> C;
+//         G.push_back({{A, B}, C});
+//     }
+
+//     sort(G.begin(), G.end(), cri);
+//     kruskal();
+//     cout << ans;
+
+//     return 0;
+// }
+
+/*
+    Prim Version
+*/
 #include <iostream>
-#include <algorithm>
 #include <vector>
+#include <queue>
 using namespace std;
+int V, E, visit[10001], ans;
+vector<pair<int, int>> G[10001];
+priority_queue<pair<int, int>> pq;
 
-int V, E, table[10001], ans;
-vector<pair<pair<int, int>, int>> G;
-
-int cri(const pair<pair<int, int>, int> &a, const pair<pair<int, int>, int> &b)
+void prim(int start)
 {
-    return a.second < b.second;
-}
+    visit[start] = 1;
 
-int find(int x)
-{
-    if (table[x] == x)
+    for (auto it : G[start])
     {
-        return x;
+        pq.push(it);
     }
-    return table[x] = find(table[x]);
-}
 
-void union_(int a, int b)
-{
-    a = find(a);
-    b = find(b);
-
-    if (a < b)
+    while (!pq.empty())
     {
-        table[b] = a;
-    }
-    else
-    {
-        table[a] = b;
-    }
-}
+        auto front = pq.top();
+        pq.pop();
+        int curCost = -front.first;
+        int cur = front.second;
 
-void kruskal()
-{
-    for (auto target : G)
-    {
-        int from = target.first.first;
-        int to = target.first.second;
-        int cost = target.second;
-
-        if (find(from) != find(to))
-        {
-            union_(from, to);
-            ans += cost;
+        if(visit[cur]){
+            continue;
         }
+
+        visit[cur] = 1;
+        ans += curCost;
+
+        for(auto it : G[cur]){
+            pq.push(it);
+        }        
     }
 }
 
 int main()
 {
-
     cin.tie(0);
     ios::sync_with_stdio(0);
 
     cin >> V >> E;
 
-    G.reserve(E);
-    for (int i = 1; i <= V; i++)
-    {
-        table[i] = i;
-    }
-
     for (int i = 0; i < E; i++)
     {
         int A, B, C;
         cin >> A >> B >> C;
-        G.push_back({{A, B}, C});
+
+        G[A].push_back({-C, B});
+        G[B].push_back({-C, A});
     }
 
-    sort(G.begin(), G.end(), cri);
-    kruskal();
+    prim(1);
     cout << ans;
 
     return 0;
