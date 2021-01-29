@@ -13,13 +13,14 @@
 
 -   N개의 자연수로 구성된 수열이 있다.
 -   합이 M인 부분 연속 수열의 개수를 O(N) 시간 내에 구해라.
+[백준 1806](./백준/1806.cpp)
 
 #### 2. 문제 해결 방법
 
 -   리스트에 순차적으로 접근해야할 때 두 개의 점을 이용해, 위치를 기록하면서 처리한다.
 
 1. 시작점(start)과, 끝점(end)이 첫번째 원소의 인덱스를 가리키도록 한다.
-2. 현재 부분합이 M과 같다면 카운트한다.
+2. 현재 부분합이 M과 같다면, 카운트하고, end를 1 증가시킨다.
 3. 현재 부분합이 M보다 작으면, end를 1 증가시킨다.
 4. 현재 부분합이 M보다 크다면, start를 1 증가시킨다.
 5. 모든 경우에 대해 2~4 과정을 반복한다.
@@ -28,35 +29,45 @@
 
 ```c++
 #include <iostream>
-int data[] = {1, 2, 3, 2, 5};
-int N, M, count, start, end, sum;
+using namespace std;
+
+int arr[] = {1, 2, 3, 2, 5};
+int N, S, sum, l, r, ans;
 
 int main()
 {
     // 데이터의 개수
-    N = sizeof(data) / sizeof(int);
-
+    N = sizeof(arr) / sizeof(int);
+    
     // 원하는 부분 연속 수열의 합
-    M = 5;
+    S = 5;
 
-    // start를 차례대로 증가
-    for (start = 0; start < N; start++)
+    // * 초기 합 초기화 *
+    sum = arr[0];
+    
+    while (l <= r && r < N)
     {
-        // end를 가능한 만큼 이동
-        while (sum < M && end < N)
+        // 합이 원하는 합보다 작다면, 오른쪽 포인터를 이동시킨 후 더한다.
+        if (sum < S)
         {
-            sum += data[end];
-            ++end;
+            sum += arr[++r];
         }
-        // 부분합이 M이면 카운트한다.
-        if (sum == M)
+
+        // 합이 원하는 합과 같다면, 카운트하고, 오른쪽 포인터를 이동시킨 후 더한다.
+        else if (sum == S)
         {
-            ++count;
+            ++ans;
+            sum += arr[++r];
         }
-        sum -= data[start];
+
+        // 합이 원하는 합보다 크다면, 왼쪽 포인터가 가리키는 값을 뺀 뒤 이동시킨다.
+        else if (sum > S)
+        {
+            sum -= arr[l++];
+        }
     }
 
-    std::cout << count << "\n";
+    cout << ans;
 
     return 0;
 }
