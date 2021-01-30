@@ -139,3 +139,55 @@ int main()
 <span>※ 비연결 그래프인 경우도 고려해야한다.</span>
 
 => [이분 그래프 확인하는 코드](./백준/1707.cpp)
+
+<hr/>
+
+### 사이클 찾기
+#### 사이클이란?
+<img src="https://blog.kakaocdn.net/dn/tVNdo/btqw7bDujcb/UWt6YsgLzjQHhDKldCoLT1/img.png"/>
+<p>위와 같은 그래프가 있을 때 1 -> 2 -> 4 -> 3 -> 1 과 같이 순환이 발생하는 부분을 사이클이라고 한다.</p>
+
+#### 1. 단방향 그래프에서 찾기
+##### 예시 문제
+- [백준 9466 텀프로젝트](./백준/9466.cpp)
+##### 기본 아이디어
+- 모든 정점에 대해 DFS를 해서 자기 자신이 나온다면, 사이클이 존재하는 것이다.
+
+##### 알고리즘
+1. 노드에 방문했다는 표시를 해준다. `visit[node] = true`
+2. 현재 노드가 가리키고 있는 다음 노드에 대해
+    - 방문하지 않았다면, 재귀적으로 DFS 탐색한다.
+    - 방문했지만, 종료되지 않은 노드라면 사이클이 존재하는 것이다.
+3. 노드가 종료됐다는 표시를 해준다. `finished[node] = true`
+
+##### 예시코드
+```c++
+vector<vector<int>> adj;
+vector<bool> visit, finished;
+bool hasCycle;
+
+void dfs(int node)
+{
+    visit[node] = 1;
+    for (int i = 0; i < adj[node].size(); ++i) {
+        int next = adj[node][i];
+
+        // 방문하지 않은 경우 
+        if (!visit[next]){
+            dfs(next);
+        }
+
+        //  방문했지만, 종료되지 않은 경우
+        else if (!finished[next]) {
+            hasCycle = 1;
+        }
+    }
+    finished[node] = 1;
+}
+```
+#### 2. 무향 그래프에서 찾기
+##### 기본 아이디어
+- 부모가 같은 노드가 있다면 사이클이 발생한 것이다.
+
+##### 예시 문제 & 코드
+- [백준 1197 최소 스패닝 트리 - 크루스칼 부분](./백준/1197.cpp)
