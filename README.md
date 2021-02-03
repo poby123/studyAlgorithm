@@ -124,6 +124,96 @@ int main()
 ```
 <hr/>
 
+### 세그먼트 트리
+#### 세그먼트 트리란?
+배열 A가 있을 때, A의 부분 합을 트리구조로 저장함으로써 O(logN) 이라는 빠른 속도로 부분합을 구할 수 있다.
+
+#### 세그먼트 트리 만들기
+세그먼트 트리를 사용하기 위해, 다음과 같은 규칙대로 배열을 이진 트리 구조로 만든다.
+1. 부모노드의 값은 양 쪽 자식 노드의 합이다.
+2. 배열의 요소들은 leaf 노드에 위치한다.
+
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F2fQXV%2FbtqyDDzhnQD%2FkzrqxxCbj1AT1YYa1f8xx1%2Fimg.png" width="700">
+
+<p>
+트리는 1차원 배열을 통해 구현할 수 있으며, <strong>트리의 각 노드 별 배열의 인덱스</strong>는 아래 그림과 같다. 아래 그림과 같이, 세그먼트 트리에서 첫번째 인덱스는 0이 아닌 1을 사용한다.
+</p>
+
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FJyU75%2FbtqyGwrsP2Z%2FKfjafFJhL0x2JRosP4vrF0%2Fimg.png" width="700"> 
+
+<p>
+기존 배열의 크기를 N이라고 하면, 리프노드의 개수는 N이고, 따라서 트리의 높이(H)는 LogN, 배열의 크기는 2^(H+1) 이 된다. 따라서 세그먼트 트리 배열을 만들 때, 배열의 크기는,  <strong>2^k > N</strong>인 k중 가장 작은 값을 취하면 된다. <br/> 이렇게 계산하는 게 귀찮다면, 크기를 4 * N으로 잡으면 모든 범위를 커버할 수 있다.
+</p>
+
+#### 트리 만드는 예제 코드
+```c++
+// start : 시작 인덱스, end : 끝 인덱스
+int init(int start, int end, int node){
+    if(start == end) {
+        return tree[node] = a[start];
+    }
+    int mid = (start + end) / 2;
+
+    // 재귀적으로 왼쪽과 오른쪽 부분으로 나눈 뒤, 그 합을 자기 노드의 값으로 취한다.
+    return tree[node] = init(start, mid, node * 2) + init(mid + 1, end, node * 2 + 1);
+}
+```
+<br/>
+
+#### 구간합 구하는 예제 코드
+구간의 합은 <span style="color:red">범위 안에 있는 경우</span> 에 한해서만 더하면 된다. 그 밖의 경우는 고려하지 않는다.
+
+```c++
+// start: 시작 인덱스, end: 끝 인덱스
+// left, right : 구간 합 범위
+int sum(int start, int end, int left, int right, int node){
+    // 범위 밖
+    if(left > end || right < start){
+        return 0;
+    }
+
+    // 범위 안
+    if(left <= start && end <= right){
+        return tree[node];
+    }
+
+    // left나 rigt 중 하나만 범위에 속하는 경우, 두 부분으로 나누어 합을 구한다.
+    int mid = (start + end) / 2;
+    return sum(start, mid, node * 2, left, right) + sum(mid + 1, end, node * 2 + 1, left, right);
+}
+```
+
+<br/>
+
+#### 특정 원소의 값을 수정하는 코드
+해당 원소를 포함하고 있는 모든 구간 합 노드들을 갱신하면 된다. 수정할 노드도 <span style="color:red">범위안에 있는 경우</span> 에 한해서 수정하면 된다.
+
+```c++
+// start: 시작 인덱스, end: 끝 인덱스
+// index: 구간 합을 수정하고자 하는 노드
+// dif: 변경하고자 하는 값 - a[index]
+void update(int start, int end, int node, int index, int dif) {
+    // 범위 밖
+    if(index < left || index > end){
+        return;
+    }
+
+    // 범위 안
+    tree[node] += dif;
+    if(start == end){
+        return;
+    }
+    int mid = (start + end) / 2;
+    update(start, mide, node * 2, index, dif);
+    update(mid + 1, end, node * 2 + 1, index, dif);
+}
+```
+
+#### 참조
+[코드 출처](https://blog.naver.com/ndb796/221282210534)
+
+<hr/>
+
 ### 이분 그래프
 
 ##### 이분 그래프란?
