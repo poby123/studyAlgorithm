@@ -229,23 +229,25 @@ long long sum(int start, int end, int left, int right, int node)
 해당 원소를 포함하고 있는 모든 구간 합 노드들을 갱신하면 된다. 수정할 노드도 <span style="color:red">범위안에 있는 경우</span> 에 한해서 수정하면 된다.
 
 ```c++
-// start: 시작 인덱스, end: 끝 인덱스
-// index: 구간 합을 수정하고자 하는 노드
-// dif: 변경하고자 하는 값 - a[index]
-void update(int start, int end, int node, int index, int dif) {
-    // 범위 밖
-    if(index < left || index > end){
+// start ~ end : node가 담당하고 있는 범위
+// index 번째 수를 val로 변경한다고 할 때,
+// dif = val - arr[index]
+void update(int start, int end, int node, int index, long long dif)
+{
+    // [start, end]에 index가 포함되지 않는 경우
+    if (index < start || index > end)
+    {
         return;
     }
 
-    // 범위 안
+    // [start, end]에 index가 포함되는 경우
     tree[node] += dif;
-    if(start == end){
-        return;
+    if (start != end)
+    {
+        int mid = (start + end) / 2;
+        update(start, mid, node * 2, index, dif);
+        update(mid + 1, end, node * 2 + 1, index, dif);
     }
-    int mid = (start + end) / 2;
-    update(start, mide, node * 2, index, dif);
-    update(mid + 1, end, node * 2 + 1, index, dif);
 }
 ```
 
