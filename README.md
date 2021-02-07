@@ -230,24 +230,32 @@ long long sum(int start, int end, int left, int right, int node)
 
 ```c++
 // start ~ end : node가 담당하고 있는 범위
-// index 번째 수를 val로 변경한다고 할 때,
-// dif = val - arr[index]
-void update(int start, int end, int node, int index, long long dif)
+// index 번째 수를 val로 변경.
+void update(int start, int end, int node, int index, int val)
 {
-    // [start, end]에 index가 포함되지 않는 경우
-    if (index < start || index > end)
+    // 노드가 담당하고 있는 범위밖이면 무시.
+    // index, start ~ end or start ~ end, index
+    if (start > index || index > end)
     {
         return;
     }
 
-    // [start, end]에 index가 포함되는 경우
-    tree[node] += dif;
-    if (start != end)
+    // 현재 위치면 업데이트하고 종료.
+    if (start == end)
     {
-        int mid = (start + end) / 2;
-        update(start, mid, node * 2, index, dif);
-        update(mid + 1, end, node * 2 + 1, index, dif);
+        A[index] = tree[node] = val;
+        return;
     }
+
+
+    int mid = (start + end) / 2;
+
+    // 자녀 업데이트
+    modify(start, mid, node * 2, index, val);
+    modify(mid + 1, end, node * 2 + 1, index, val);
+    
+    // 업데이트된 자녀의 값으로 부모 업데이트
+    tree[node] = tree[node * 2] + tree[node * 2 + 1];
 }
 ```
 
