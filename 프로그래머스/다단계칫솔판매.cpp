@@ -10,23 +10,26 @@ using namespace std;
 unordered_map<string, string> parent;
 unordered_map<string, int> people;
 
-void calcPrice(string name, int curPrice){
+void calcIncome(string name, int curIncome)
+{
     // 기저사례
-    if(name == "-"){
+    if (name == "-")
+    {
         return;
     }
-    
-    int parentPrice = curPrice * 0.1;
+
+    int parentPrice = curIncome * 0.1;
 
     // 10% 계산 금액이 1원 미만인 경우
-    if(parentPrice < 1){
-        people[name] += curPrice;
+    if (parentPrice < 1)
+    {
+        people[name] += curIncome;
         return;
     }
-    curPrice -= parentPrice;
-    people[name] += curPrice;
 
-    calcPrice(parent[name], parentPrice);
+    // 나머지 경우
+    people[name] += (curIncome - parentPrice);
+    calcIncome(parent[name], parentPrice);
 }
 
 vector<int> solution(vector<string> enroll, vector<string> referral, vector<string> seller, vector<int> amount)
@@ -39,16 +42,19 @@ vector<int> solution(vector<string> enroll, vector<string> referral, vector<stri
         string curName = enroll[i];
         string parentName = referral[i];
 
-        parent.insert({curName, parentName});
-        people.insert({curName, 0});
+        parent[curName] = parentName; // parent.insert({curName, parentName});
+        people[curName] = 0;          // people.insert({curName, 0});
     }
 
     // calc
-    for(int i=0;i<seller.size();i++){
-        calcPrice(seller[i], amount[i] * PRICE);
+    for (int i = 0; i < seller.size(); i++)
+    {
+        calcIncome(seller[i], amount[i] * PRICE);
     }
 
-    for(auto i : enroll){
+    // get answer
+    for (auto i : enroll)
+    {
         answer.push_back(people[i]);
     }
 
