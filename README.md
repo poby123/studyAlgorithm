@@ -251,8 +251,8 @@ void update(int start, int end, int node, int index, int val)
     int mid = (start + end) / 2;
 
     // 자녀 업데이트
-    modify(start, mid, node * 2, index, val);
-    modify(mid + 1, end, node * 2 + 1, index, val);
+    update(start, mid, node * 2, index, val);
+    update(mid + 1, end, node * 2 + 1, index, val);
     
     // 업데이트된 자녀의 값으로 부모 업데이트
     tree[node] = tree[node * 2] + tree[node * 2 + 1];
