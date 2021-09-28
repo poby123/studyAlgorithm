@@ -1,3 +1,4 @@
 *.exe
 .prettierrc
 test.*
+test*
