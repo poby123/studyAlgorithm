@@ -3,6 +3,9 @@
         "*.ejs": "html",
         "ios": "cpp",
         "vector": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "iostream": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp"
     }
 }
