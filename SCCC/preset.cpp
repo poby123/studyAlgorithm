@@ -2,6 +2,7 @@
 using namespace std;
 #define endl '\n'
 
+using ll = long long;
 using pp = pair<int, int>;
 using tp = tuple<int, int, int>;
 
